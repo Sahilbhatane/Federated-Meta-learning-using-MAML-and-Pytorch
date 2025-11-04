@@ -242,8 +242,8 @@ def simulate_federated_maml(
     Returns:
         Dictionary with training history
     """
-    import learn2learn as l2l
     from copy import deepcopy
+    from tqdm import tqdm
     
     print(f"\nSimulating Federated MAML with {len(client_loaders)} clients")
     
@@ -259,63 +259,78 @@ def simulate_federated_maml(
         'per_client_metrics': []
     }
     
-    for round_num in range(1, num_rounds + 1):
-        print(f"\n--- Round {round_num}/{num_rounds} ---")
+    print("\nStarting training...")
+    for round_num in tqdm(range(1, num_rounds + 1), desc="Federated Rounds", ncols=100):
+        if round_num % 10 == 1 or round_num == num_rounds:
+            print(f"\n--- Round {round_num}/{num_rounds} ---")
         
         meta_model.train()
         round_loss = 0.0
         round_acc = 0.0
         client_metrics = []
-        
-        meta_optimizer.zero_grad()
+        client_models = []
         
         for client_id, (support_loader, query_loader) in client_loaders.items():
-            # Create MAML learner
-            maml = l2l.algorithms.MAML(meta_model, lr=inner_lr, first_order=False)
-            learner = maml.clone()
+            # Clone model for client adaptation
+            learner = deepcopy(meta_model)
+            inner_optimizer = torch.optim.SGD(learner.parameters(), lr=inner_lr)
             
             # Inner loop: Adapt to client data
+            learner.train()
             for _ in range(inner_steps):
                 for features, labels in support_loader:
                     features, labels = features.to(device), labels.to(device)
+                    
+                    inner_optimizer.zero_grad()
                     outputs = learner(features)
                     loss = criterion(outputs, labels)
-                    learner.adapt(loss)
+                    loss.backward()
+                    inner_optimizer.step()
             
             # Evaluate on query set
+            learner.eval()
             client_loss = 0.0
             client_correct = 0
             client_total = 0
             
-            for features, labels in query_loader:
-                features, labels = features.to(device), labels.to(device)
-                outputs = learner(features)
-                loss = criterion(outputs, labels)
-                
-                client_loss += loss / len(client_loaders)
-                
-                _, predicted = torch.max(outputs.data, 1)
-                client_total += labels.size(0)
-                client_correct += (predicted == labels).sum().item()
+            with torch.no_grad():
+                for features, labels in query_loader:
+                    features, labels = features.to(device), labels.to(device)
+                    outputs = learner(features)
+                    loss = criterion(outputs, labels)
+                    
+                    client_loss += loss.item()
+                    
+                    _, predicted = torch.max(outputs.data, 1)
+                    client_total += labels.size(0)
+                    client_correct += (predicted == labels).sum().item()
             
+            client_loss /= len(query_loader)
             client_acc = 100 * client_correct / client_total if client_total > 0 else 0
             
-            round_loss += client_loss.item()
-            round_acc += client_acc / len(client_loaders)
+            round_loss += client_loss
+            round_acc += client_acc
             
             client_metrics.append({
                 'client_id': client_id,
-                'loss': client_loss.item(),
+                'loss': client_loss,
                 'accuracy': client_acc,
                 'samples': client_total
             })
             
-            print(f"Client {client_id}: Loss={client_loss.item():.4f}, Acc={client_acc:.2f}%")
+            client_models.append(learner)
+            
+            if round_num % 10 == 1 or round_num == num_rounds:
+                print(f"Client {client_id}: Loss={client_loss:.4f}, Acc={client_acc:.2f}%")
         
-        # Meta-update
-        round_loss_tensor = torch.tensor(round_loss, requires_grad=True)
-        round_loss_tensor.backward()
-        meta_optimizer.step()
+        # Meta-update: FedAvg aggregation
+        with torch.no_grad():
+            for param_idx, meta_param in enumerate(meta_model.parameters()):
+                client_params = [list(client_model.parameters())[param_idx].data for client_model in client_models]
+                meta_param.data = torch.stack(client_params).mean(dim=0)
+        
+        round_loss /= len(client_loaders)
+        round_acc /= len(client_loaders)
         
         # Store metrics
         history['rounds'].append(round_num)
@@ -323,7 +338,8 @@ def simulate_federated_maml(
         history['train_acc'].append(round_acc)
         history['per_client_metrics'].append(client_metrics)
         
-        print(f"Round {round_num} Average: Loss={round_loss:.4f}, Acc={round_acc:.2f}%")
+        if round_num % 10 == 1 or round_num == num_rounds:
+            print(f"Round {round_num} Average: Loss={round_loss:.4f}, Acc={round_acc:.2f}%")
     
     # Save results
     save_path = Path(save_dir)

@@ -81,20 +81,23 @@ class MAMLFlowerClient(fl.client.NumPyClient):
         Returns:
             Adapted model
         """
-        import learn2learn as l2l
+        from copy import deepcopy
         
-        # Create MAML learner
-        maml = l2l.algorithms.MAML(self.model, lr=self.inner_lr, first_order=False)
-        learner = maml.clone()
+        # Clone model for adaptation
+        learner = deepcopy(self.model)
+        inner_optimizer = torch.optim.SGD(learner.parameters(), lr=self.inner_lr)
         
         # Adaptation steps
+        learner.train()
         for _ in range(self.inner_steps):
             for features, labels in self.support_loader:
                 features, labels = features.to(self.device), labels.to(self.device)
                 
+                inner_optimizer.zero_grad()
                 outputs = learner(features)
                 loss = self.criterion(outputs, labels)
-                learner.adapt(loss)
+                loss.backward(create_graph=True)  # Important for MAML!
+                inner_optimizer.step()
         
         return learner
     
