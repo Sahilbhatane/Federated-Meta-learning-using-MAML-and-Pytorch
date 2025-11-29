@@ -86,7 +86,7 @@ See `Planning.md` for architecture and research documentation.
 - Phase 1: Planning (done)
 - Phase 2: Dataset & Foundation (done)
 - Phase 3: Implementation (done) (63.26% accuracy achieved)
-- Phase 4: Evaluation ← Current
+- Phase 4: Evaluation ← Currently working
 - Phase 5: Optimization
 
 ## License
