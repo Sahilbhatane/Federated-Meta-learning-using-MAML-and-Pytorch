@@ -215,7 +215,7 @@ tensorboard --logdir=results/tensorboard
 **Phase 2 Modules**:
 - `src/data/loader.py`: Dataset loading, client partitioning, few-shot splits ✓ Updated
 - `src/data/preprocessor.py`: Data normalization and cleaning
-- `src/models/base_model.py`: HealthMonitorNet (9→32→16→4 architecture) ✓ Updated
+- `src/models/base_model.py`: HealthMonitorNet (8→32→16→4 architecture) ✓ Updated (Issue #1)
 - `src/utils/metrics.py`: Evaluation metrics
 - `src/utils/visualization.py`: Plotting functions
 
@@ -245,6 +245,7 @@ tensorboard --logdir=results/tensorboard
 ✓ Configured for 4 heterogeneous clients (30-42 samples each)
 
 **Key Parameters:**
+- Input Features: 8 (fixed in Issue #1 - removed target leakage)
 - Inner LR: 0.01 (adaptation)
 - Meta LR: 0.001 (meta-update)
 - Inner Steps: 3 (fast adaptation)
