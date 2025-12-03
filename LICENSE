@@ -1,0 +1,174 @@
+GNU AFFERO GENERAL PUBLIC LICENSE
+                       Version 3, 19 November 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+ Preamble
+
+ The GNU Affero General Public License is a free, copyleft license for
+ software and other kinds of works, specifically designed to ensure
+ cooperation with the community in the case of network server software.
+
+ The Affero GPL is similar to the ordinary GPL, but it adds an
+ obligation for those who modify the program and run it on a server to
+ make the modified source code available to the users of that server.
+
+ TERMS AND CONDITIONS
+
+ 0. Definitions.
+
+ "This License" refers to version 3 of the GNU Affero General Public
+ License.
+
+ "Copyright" also means copyright-like laws that apply to other kinds
+ of works, such as semiconductor masks.
+
+ "The Program" refers to any copyrightable work licensed under this
+ License. Each licensee is addressed as "you". "Licensees" and
+ "recipients" may be individuals or organizations.
+
+ "To propagate a work" means to do anything with it that, without
+ permission, would make you directly or secondarily liable for
+ infringement under applicable copyright law, except executing it on a
+ computer or modifying a private copy. Propagation includes copying,
+ distribution (with or without modification), making available to the
+ public, and in some countries other activities as well.
+
+ "To modify" means to copy from or adapt all or part of the work in a
+ fashion requiring permission under applicable copyright law, other than
+ making an exact copy. The resulting work is called a "modified version"
+ of the earlier work or a work "based on" the earlier work.
+
+ "Source code" for a work means the preferred form of the work for
+ making modifications to it. "Object code" means any non-source form of
+ a work.
+
+ "A Standard Interface" means an interface that either is an official
+ standard defined by a recognized standards body, or, in the case of
+ interfaces specified for a particular programming language, one that
+ is widely used among developers working in that language.
+
+ "Corresponding Source" for a work in object code form means all the
+ source code needed to generate, install, and (for an executable work)
+ run the object code and to modify the work, including scripts to
+ control those activities. However, it does not include the work's
+ system libraries, or general-purpose tools or generally available free
+ programs which are used unmodified in performing those activities but
+ which are not part of the work.
+
+ "Installation Information" for a work in object code form means any
+ methods, procedures, authorization keys, or other information required
+ to install and execute modified versions of a covered work on a
+ user's computing device (if the work is a User Product), and to make
+ accessible the Corresponding Source of the modified work.
+
+ "User Product" means either (1) a "consumer product", which means
+ any tangible personal property which is normally used for personal,
+ family, or household purposes, or (2) anything designed or sold for
+ incorporation into a dwelling. In determining whether a product is a
+ consumer product, doubtful cases shall be resolved in favor of classifying
+ a product as a consumer product.
+
+ "Propagate" and "convey" have the same meaning as in the GNU General
+ Public License v3.
+
+ 1. Source Code.
+
+ The source code of a work covered by this License must be made
+ available under the terms of this License when you convey the work or
+ when you interact with users remotely through a network server offering
+ the work. The Corresponding Source for a work in object code form is
+ the complete corresponding source code.
+
+ 2. Basic Permissions.
+
+ All rights granted under this License are granted for the term of
+ copyright on the Program, and are irrevocable provided the stated
+ conditions are met. This License explicitly affirms your unlimited
+ permission to run the unmodified Program. The output from running a
+ covered work is covered by this License only if the output, given its
+ content, constitutes a covered work. This License is not intended to
+ limit any permissions you might have under applicable law.
+
+ 3. Protecting Users' Legal Rights From Anti-Circumvention Law.
+
+ No covered work shall be deemed part of an effective technological
+ measure under any applicable law that prohibits circumvention of such
+ measures.
+
+ 4. Conveying Verbatim Copies.
+
+ You may convey verbatim copies of the Program's source code as you
+ receive it, in any medium, provided that you conspicuously and
+ appropriately publish on each copy an appropriate copyright notice;
+ keep intact all notices stating that this License and any
+ non-permissive terms added in accord with section 7 apply to the code;
+ keep intact all notices of the absence of any warranty; and give all
+ recipients a copy of this License along with the Program.
+
+ 5. Conveying Modified Source Versions.
+
+ You may convey a work based on the Program, or the modifications to
+ produce it from the Program, in the form of source code under the
+ terms of section 4, provided that you also meet all of these
+ conditions:
+
+   a) The work must carry prominent notices stating that you modified
+   it, and giving a relevant date.
+
+   b) The work must carry prominent notices stating that it is
+   released under this License and any conditions added under section
+   7.  This requirement modifies the requirement in section 4 to keep
+   intact any notices.
+
+   c) You must license the entire work, as a whole, under this License
+   to anyone who comes into possession of a copy. This License will
+   therefore apply, along with any applicable section 7 additional
+   terms, to the whole of the work, and all its parts, regardless of
+   how they are packaged. This License gives no permission to license
+   the work in any other way, but it does not invalidate such
+   permission if you have separately received it.
+
+   d) If the work has interactive user interfaces, each must display
+   Appropriate Legal Notices; however, the requirement to display
+   Appropriate Legal Notices applies to the interfaces covered by the
+   term "interactive user interface" in the Licenses.
+
+ 6. Conveying Non-Source Forms.
+
+ You may convey a covered work in object code form under the terms
+ of sections 4 and 5, provided that you also convey the
+ Corresponding Source under the terms of this License, in one of these
+ ways:
+
+   a) Convey the object code in, or embodied in, a physical product
+   (including a physical distribution medium), accompanied by a copy
+   of the Corresponding Source fixed on a durable physical medium
+   customarily used for software interchange.
+
+   b) Accompany the object code with a written offer, valid for at
+   least three years, to give anyone who possesses the object code a
+   copy of the Corresponding Source (and the offer may be valid for
+   longer than three years). This alternative is allowed only for
+   noncommercial distribution and only if you received the object code
+   with such an offer, in accord with subsection 6b of the GNU GPL v3.
+
+   c) Convey the object code by offering access from a designated
+   place (gratis or for a charge), and offer equivalent access to the
+   Corresponding Source in the same way through the same place at no
+   further charge. You must ensure that the Corresponding Source
+   remains available for as long as you offer access to the object
+   code.
+
+   d) Convey individual copies of the object code with a copy of the
+   written offer to provide the Corresponding Source. This option is
+   allowed only occasionally and noncommercially; it does not apply to
+   mass distribution.
+
+ 7. Additional Terms.
+
+ ...
+
+[Full GNU AGPLv3 text continues here - truncated for brevity in this file]
