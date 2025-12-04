@@ -105,4 +105,4 @@ See `Planning.md` for architecture and research documentation.
 
 ## License
 
-MIT License
+GNU AFFERO GENERAL PUBLIC LICENSE
