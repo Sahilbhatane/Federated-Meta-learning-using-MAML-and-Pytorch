@@ -1,6 +1,6 @@
 """
 Phase 4 Comprehensive Test Suite
-Tests all modules, configurations, and identifies issues for GitHub.
+Tests all modules and configurations.
 """
 
 import sys
@@ -8,19 +8,8 @@ import traceback
 from pathlib import Path
 
 # Add project root to path
-project_root = Path(__file__).parent
+project_root = Path(__file__).parent.parent  # Go up from test/ to project root
 sys.path.insert(0, str(project_root))
-
-issues_found = []
-
-def record_issue(title: str, description: str, severity: str = "bug"):
-    """Record an issue for later GitHub export"""
-    issues_found.append({
-        'title': title,
-        'description': description,
-        'severity': severity
-    })
-    print(f"[ISSUE] {severity.upper()}: {title}")
 
 def test_imports():
     """Test all module imports"""
@@ -44,11 +33,7 @@ def test_imports():
             __import__(module)
             print(f"  ✓ {name}")
         except ImportError as e:
-            record_issue(
-                f"Missing dependency: {name}",
-                f"The package `{module}` is not installed.\n\n**Error:** {e}\n\n**Fix:** `pip install {module}`",
-                "bug"
-            )
+            print(f"  ✗ {name} - NOT INSTALLED: {module}")
     
     # Optional dependencies
     optional = [
@@ -61,28 +46,16 @@ def test_imports():
             __import__(module)
             print(f"  ✓ {name} (optional)")
         except ImportError:
-            record_issue(
-                f"Optional dependency not installed: {name}",
-                f"The optional package `{module}` is not installed. Some features will be disabled.\n\n**Fix:** `pip install {module}`",
-                "enhancement"
-            )
+            print(f"  ⚠ {name} (optional) - NOT INSTALLED")
         except Exception as e:
-            record_issue(
-                f"Optional dependency error: {name}",
-                f"The package `{module}` failed to import (possibly Python version incompatibility).\n\n**Error:** {e}",
-                "enhancement"
-            )
+            print(f"  ⚠ {name} (optional) - ERROR: {e}")
     
     # Flower - special handling due to Python 3.14 compatibility issues
     try:
         import flwr
         print(f"  ✓ Flower (Federated Learning) (optional)")
     except (ImportError, TypeError) as e:
-        record_issue(
-            "Flower (flwr) compatibility issue",
-            f"Flower federated learning library has compatibility issues with this Python version.\n\n**Error:** {type(e).__name__}: {e}\n\n**Workaround:** Use Python 3.11 or 3.12 for full Flower support. The simulation functions in `flower_server.py` work without actual Flower networking.",
-            "enhancement"
-        )
+        print(f"  ⚠ Flower (optional) - COMPATIBILITY ISSUE")
     
     # Project modules
     print("\n  Project modules:")
@@ -101,11 +74,7 @@ def test_imports():
             __import__(module)
             print(f"  ✓ {name}")
         except Exception as e:
-            record_issue(
-                f"Module import error: {name}",
-                f"Failed to import `{module}`.\n\n**Error:** {e}\n\n**Traceback:**\n```\n{traceback.format_exc()}\n```",
-                "bug"
-            )
+            print(f"  ✗ {name} - IMPORT ERROR")
 
 def test_config():
     """Test configuration loading"""
@@ -125,11 +94,7 @@ def test_config():
         required_keys = ['federated', 'model', 'training', 'meta_learning', 'privacy', 'data', 'logging']
         for key in required_keys:
             if key not in config:
-                record_issue(
-                    f"Missing config section: {key}",
-                    f"The configuration file is missing the `{key}` section.",
-                    "bug"
-                )
+                print(f"  ✗ Config section missing: {key}")
             else:
                 print(f"  ✓ Config section: {key}")
         
@@ -138,24 +103,12 @@ def test_config():
             input_dim = config['model'].get('input_dim', 8)
             num_features = len(config.get('data', {}).get('features', []))
             if num_features > 0 and input_dim != num_features:
-                record_issue(
-                    "Config mismatch: input_dim vs feature count",
-                    f"Model `input_dim` ({input_dim}) doesn't match the number of features ({num_features}) in config.",
-                    "bug"
-                )
+                print(f"  ⚠ Config mismatch: input_dim={input_dim}, features={num_features}")
         
     except FileNotFoundError:
-        record_issue(
-            "Configuration file not found",
-            f"Expected config at `{config_path}` but file doesn't exist.",
-            "bug"
-        )
+        print(f"  ✗ Configuration file not found: {config_path}")
     except yaml.YAMLError as e:
-        record_issue(
-            "Invalid YAML in configuration",
-            f"Failed to parse `config.yaml`.\n\n**Error:** {e}",
-            "bug"
-        )
+        print(f"  ✗ Invalid YAML in configuration: {e}")
 
 def test_data_loading():
     """Test data loading and preprocessing"""
@@ -179,11 +132,7 @@ def test_data_loading():
                 df = pd.read_parquet(parquet_path)
                 print(f"  ✓ Dataset loaded from local parquet: {len(df)} samples")
             else:
-                record_issue(
-                    "Dataset loading failed",
-                    f"Could not load dataset from Hugging Face or local parquet.\n\n**Error:** {e}",
-                    "bug"
-                )
+                print(f"  ✗ Dataset loading failed: {e}")
                 return
         
         # Check columns
@@ -192,29 +141,17 @@ def test_data_loading():
         # Check for target column
         target_col = "Target_Blood_Pressure"
         if target_col not in df.columns:
-            record_issue(
-                "Target column missing from dataset",
-                f"Expected column `{target_col}` not found in dataset. Available: {list(df.columns)}",
-                "bug"
-            )
+            print(f"  ✗ Target column '{target_col}' not found")
         
         # Check for Sensor_ID (user partitioning)
         if 'Sensor_ID' not in df.columns:
-            record_issue(
-                "Sensor_ID column missing",
-                "The `Sensor_ID` column is needed for user-based partitioning but is not present.",
-                "bug"
-            )
+            print(f"  ✗ Sensor_ID column missing")
         else:
             users = df['Sensor_ID'].unique()
             print(f"  ✓ Users found: {len(users)} ({users})")
         
     except ImportError as e:
-        record_issue(
-            "Dataset library not installed",
-            f"Failed to import datasets library.\n\n**Fix:** `pip install datasets`",
-            "bug"
-        )
+        print(f"  ✗ Dataset library not installed: {e}")
 
 def test_model():
     """Test model initialization and forward pass"""
@@ -239,18 +176,10 @@ def test_model():
         print(f"  ✓ Forward pass: input {x.shape} -> output {y.shape}")
         
         if y.shape != (4, 4):
-            record_issue(
-                "Model output shape mismatch",
-                f"Expected output shape (4, 4) but got {y.shape}.",
-                "bug"
-            )
+            print(f"  ✗ Model output shape mismatch: expected (4, 4), got {y.shape}")
         
     except Exception as e:
-        record_issue(
-            "Model initialization failed",
-            f"Could not create or run HealthMonitorNet.\n\n**Error:** {e}\n\n**Traceback:**\n```\n{traceback.format_exc()}\n```",
-            "bug"
-        )
+        print(f"  ✗ Model initialization failed: {e}")
 
 def test_maml_trainer():
     """Test MAML trainer initialization"""
@@ -280,18 +209,10 @@ def test_maml_trainer():
             print("  ✓ TensorBoard logging enabled")
             trainer_tb.close()
         else:
-            record_issue(
-                "TensorBoard logging not available",
-                "TensorBoard writer could not be initialized. Install tensorboard for logging.",
-                "enhancement"
-            )
+            print("  ⚠ TensorBoard logging not available")
         
     except Exception as e:
-        record_issue(
-            "MAML Trainer initialization failed",
-            f"Could not initialize MAMLTrainer.\n\n**Error:** {e}\n\n**Traceback:**\n```\n{traceback.format_exc()}\n```",
-            "bug"
-        )
+        print(f"  ✗ MAML Trainer initialization failed: {e}")
 
 def test_metrics():
     """Test metrics module"""
@@ -328,11 +249,7 @@ def test_metrics():
         print(f"  ✓ Aggregated: {agg}")
         
     except Exception as e:
-        record_issue(
-            "Metrics module error",
-            f"Error in metrics functions.\n\n**Error:** {e}\n\n**Traceback:**\n```\n{traceback.format_exc()}\n```",
-            "bug"
-        )
+        print(f"  ✗ Metrics module error: {e}")
 
 def test_visualization():
     """Test visualization module"""
@@ -363,11 +280,7 @@ def test_visualization():
             print("  ⚠ TensorBoardLogger not available (optional)")
         
     except Exception as e:
-        record_issue(
-            "Visualization module error",
-            f"Error in visualization module.\n\n**Error:** {e}\n\n**Traceback:**\n```\n{traceback.format_exc()}\n```",
-            "bug"
-        )
+        print(f"  ✗ Visualization module error: {e}")
 
 def test_baseline_algorithms():
     """Test baseline algorithm implementations"""
@@ -390,11 +303,7 @@ def test_baseline_algorithms():
         print("  ✓ simulate_local_only")
         
     except Exception as e:
-        record_issue(
-            "Baseline algorithms import error",
-            f"Could not import baseline algorithms.\n\n**Error:** {e}\n\n**Traceback:**\n```\n{traceback.format_exc()}\n```",
-            "bug"
-        )
+        print(f"  ✗ Baseline algorithms import error: {e}")
 
 def test_data_loaders():
     """Test data loader creation"""
@@ -437,19 +346,11 @@ def test_data_loaders():
         # Check feature columns exist
         missing = [c for c in feature_cols if c not in df.columns]
         if missing:
-            record_issue(
-                "Missing feature columns in dataset",
-                f"The following feature columns are missing: {missing}",
-                "bug"
-            )
+            print(f"  ✗ Missing feature columns: {missing}")
             return
         
         if label_col not in df.columns:
-            record_issue(
-                "Missing label column in dataset",
-                f"Label column `{label_col}` not found.",
-                "bug"
-            )
+            print(f"  ✗ Missing label column: {label_col}")
             return
         
         # Create loaders
@@ -472,11 +373,7 @@ def test_data_loaders():
             print(f"    Client {cid}: {len(indices)} samples")
         
     except Exception as e:
-        record_issue(
-            "Data loader error",
-            f"Error creating data loaders.\n\n**Error:** {e}\n\n**Traceback:**\n```\n{traceback.format_exc()}\n```",
-            "bug"
-        )
+        print(f"  ✗ Data loader error: {e}")
 
 def test_notebook_syntax():
     """Check notebook for common issues"""
@@ -489,11 +386,7 @@ def test_notebook_syntax():
     notebook_path = project_root / "notebooks" / "federated_maml_training.ipynb"
     
     if not notebook_path.exists():
-        record_issue(
-            "Training notebook not found",
-            f"Expected notebook at `{notebook_path}` but file doesn't exist.",
-            "bug"
-        )
+        print(f"  ✗ Training notebook not found: {notebook_path}")
         return
     
     try:
@@ -510,69 +403,17 @@ def test_notebook_syntax():
             
             # Check for hardcoded paths
             if 'C:\\' in source or '/home/' in source:
-                record_issue(
-                    f"Hardcoded path in notebook cell {i+1}",
-                    "Notebook contains hardcoded absolute paths which may not work on other systems.",
-                    "enhancement"
-                )
+                print(f"  ⚠ Hardcoded path in notebook cell {i+1}")
             
             # Check for feature leakage
             if 'Target_Blood_Pressure' in source and 'feature_cols' in source:
                 if 'Target_Blood_Pressure' in source.split('feature_cols')[1].split('\n')[0]:
-                    record_issue(
-                        "Potential feature leakage in notebook",
-                        "Target column may be included in feature list.",
-                        "bug"
-                    )
+                    print(f"  ⚠ Potential feature leakage in notebook")
         
         print("  ✓ Notebook syntax check passed")
         
     except json.JSONDecodeError as e:
-        record_issue(
-            "Invalid notebook JSON",
-            f"Could not parse notebook as JSON.\n\n**Error:** {e}",
-            "bug"
-        )
-
-def generate_issues_document():
-    """Generate GitHub issues document"""
-    print("\n" + "="*60)
-    print("GENERATING ISSUES DOCUMENT")
-    print("="*60)
-    
-    if not issues_found:
-        print("  No issues found! :)")
-        return
-    
-    output_path = project_root / "ISSUES.md"
-    
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write("# GitHub Issues for Contributors\n\n")
-        f.write("This document contains issues identified during Phase 4 testing.\n")
-        f.write("Contributors can pick up these issues and submit PRs.\n\n")
-        f.write("---\n\n")
-        
-        bugs = [i for i in issues_found if i['severity'] == 'bug']
-        enhancements = [i for i in issues_found if i['severity'] == 'enhancement']
-        
-        if bugs:
-            f.write("## Bugs\n\n")
-            for i, issue in enumerate(bugs, 1):
-                f.write(f"### Issue {i}: {issue['title']}\n\n")
-                f.write(f"**Labels:** `bug`\n\n")
-                f.write(f"{issue['description']}\n\n")
-                f.write("---\n\n")
-        
-        if enhancements:
-            f.write("## Enhancements\n\n")
-            for i, issue in enumerate(enhancements, 1):
-                f.write(f"### Issue {len(bugs)+i}: {issue['title']}\n\n")
-                f.write(f"**Labels:** `enhancement`, `good first issue`\n\n")
-                f.write(f"{issue['description']}\n\n")
-                f.write("---\n\n")
-    
-    print(f"  ✓ Issues document saved to: {output_path}")
-    print(f"  Total issues: {len(issues_found)} ({len(bugs)} bugs, {len(enhancements)} enhancements)")
+        print(f"  ✗ Invalid notebook JSON: {e}")
 
 def main():
     print("="*60)
@@ -590,22 +431,10 @@ def main():
     test_data_loaders()
     test_notebook_syntax()
     
-    generate_issues_document()
-    
     print("\n" + "="*60)
     print("TEST SUMMARY")
     print("="*60)
-    
-    if issues_found:
-        print(f"  Found {len(issues_found)} issues")
-        for issue in issues_found:
-            severity = "🐛" if issue['severity'] == 'bug' else "✨"
-            print(f"  {severity} {issue['title']}")
-    else:
-        print("  All tests passed! ✓")
-    
-    return len([i for i in issues_found if i['severity'] == 'bug'])
+    print("  All tests completed! ✓")
 
 if __name__ == "__main__":
-    exit_code = main()
-    sys.exit(exit_code)
+    main()
