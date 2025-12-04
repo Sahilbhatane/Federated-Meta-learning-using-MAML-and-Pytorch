@@ -50,6 +50,20 @@ python -m src.federated.server
 tensorboard --logdir=results/tensorboard
 ```
 
+## Running Tests
+
+Run the consolidated test suite (recommended):
+```
+python -m test.run_all_tests
+```
+
+Or run pytest directly:
+```
+pytest
+```
+## Rapid Prototyping Notice
+Most of this code (except for the machine learning modules) was rapidly prototyped and may lead to unexpected errors. Please check the `CONTRIBUTING.md` file for guidelines, and report any issues via the GitHub Issues tab.
+
 ## Project Structure
 
 ```

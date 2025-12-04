@@ -5,7 +5,6 @@ Integrates MAML meta-learning with Flower federated framework.
 Based on Phase 2 insights: 4 clients with 30-42 samples each, high heterogeneity.
 """
 
-import flwr as fl
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -13,8 +12,22 @@ from typing import Dict, List, Tuple
 from collections import OrderedDict
 import numpy as np
 
+# Flower import - optional, may fail on Python 3.14 due to protobuf issues
+try:
+    import flwr as fl
+    FLOWER_AVAILABLE = True
+except (ImportError, TypeError):
+    FLOWER_AVAILABLE = False
+    fl = None
 
-class MAMLFlowerClient(fl.client.NumPyClient):
+# Base class for client - use Flower's NumPyClient if available, else object
+if FLOWER_AVAILABLE:
+    _ClientBase = fl.client.NumPyClient
+else:
+    _ClientBase = object
+
+
+class MAMLFlowerClient(_ClientBase):
     """
     Flower client that performs MAML meta-learning
     
