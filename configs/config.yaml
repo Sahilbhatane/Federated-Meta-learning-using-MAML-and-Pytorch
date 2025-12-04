@@ -1,46 +1,65 @@
 federated:
   num_clients: 4
-  clients_per_round: 3
+  clients_per_round: 4
   num_rounds: 50
   local_epochs: 3
 
 model:
-  hidden_dims: [128, 64]
-  dropout: 0.3
+  input_dim: 8
+  hidden_dims: [32, 16]
+  num_classes: 4
+  dropout: 0.2
 
 training:
   learning_rate: 0.001
-  batch_size: 32
+  batch_size: 8
   optimizer: adam
   
 meta_learning:
   algorithm: maml
-  inner_steps: 5
+  inner_steps: 3
   inner_lr: 0.01
   outer_lr: 0.001
-  adaptation_steps: 10
+  first_order: false
 
 privacy:
   enabled: false
   epsilon: 1.0
   delta: 0.00001
   max_grad_norm: 1.0
+  noise_multiplier: 1.1
 
 data:
   dataset: "SahilBhatane/Federated_Meta-learning_on_wearable_devices"
-  train_split: 0.8
+  train_split: 0.7
   num_users: 4
-  target_column: "health_status"
+  target_column: "Target_Blood_Pressure"
   features:
-    - heart_rate
-    - blood_pressure_systolic
-    - blood_pressure_diastolic
-    - temperature
-    - spo2
-    - pulse_rate
-    - respiratory_rate
-    - battery_level
+    - "Temperature (°C)"
+    - "Systolic_BP (mmHg)"
+    - "Diastolic_BP (mmHg)"
+    - "Heart_Rate (bpm)"
+    - "SpO2 (%)"
+    - "Respiratory_Rate (breaths/min)"
+    - "Pulse_Rate (bpm)"
+    - "Device_Battery_Level (%)"
 
 logging:
   save_path: "results/experiments"
-  log_interval: 5
+  tensorboard_dir: "results/tensorboard"
+  log_interval: 10
+
+baselines:
+  fedavg:
+    enabled: true
+    local_epochs: 3
+    lr: 0.01
+  fedprox:
+    enabled: true
+    local_epochs: 3
+    lr: 0.01
+    mu: 0.01
+  local_only:
+    enabled: true
+    epochs: 50
+    lr: 0.01

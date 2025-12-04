@@ -50,6 +50,20 @@ python -m src.federated.server
 tensorboard --logdir=results/tensorboard
 ```
 
+## Running Tests
+
+Run the consolidated test suite (recommended):
+```
+python -m test.run_all_tests
+```
+
+Or run pytest directly:
+```
+pytest
+```
+## VIBE code alert.
+most of this code (except ML) are vibe coded and might lead unexpected errors, `check contributing.md` file to alert this on issue tab.
+
 ## Project Structure
 
 ```

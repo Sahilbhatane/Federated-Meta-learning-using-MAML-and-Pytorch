@@ -30,6 +30,7 @@ Before opening a PR:
 - Run basic sanity checks:
   - `python -m compileall src`
   - run relevant unit tests (if present): `pytest` (optional)
+  - run the consolidated test runner: `python -m test.run_all_tests` (recommended)
 
 ## Code Style & Quality
 - Follow the repository's existing style and conventions.
