@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-01-05T23:57:05.380065",
+  "results": [
+    {
+      "num_clients": 4,
+      "total_time": 1.425203561782837,
+      "time_per_round": 0.4750678539276123,
+      "memory_peak_mb": 275.7734375,
+      "final_accuracy": 0.3,
+      "final_loss": 1.3950499594211578,
+      "convergence_round": null
+    },
+    {
+      "num_clients": 8,
+      "total_time": 0.06027412414550781,
+      "time_per_round": 0.02009137471516927,
+      "memory_peak_mb": 276.22265625,
+      "final_accuracy": 0.2625,
+      "final_loss": 1.383407786488533,
+      "convergence_round": null
+    }
+  ]
+}

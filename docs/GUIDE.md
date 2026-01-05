@@ -1,6 +1,6 @@
 # Federated Meta Learning - Project Guide
 
-Last Updated: Phase 3 - ✓ COMPLETED (Training Successful: 63.26% Accuracy)
+Last Updated: Phase 5 - ✓ IN PROGRESS (Optimization)
 
 ---
 
@@ -177,16 +177,17 @@ Run cells sequentially to:
 - Progress tracking with tqdm
 - Final accuracy: 63.26%, Loss: 0.8564
 
-**Phase 4: Evaluation** ← CURRENT PHASE
-- Add differential privacy (Opacus)
-- Privacy mechanisms (Opacus)
-- Baseline comparisons
-- Metrics & visualization dashboard
-- TensorBoard integration
+**Phase 4: Evaluation & Privacy** ✓ COMPLETED
+- Differential privacy (Opacus integration)
+- TensorBoard logging and metrics
+- Baseline comparisons (FedAvg, FedProx, Local-only)
+- Comprehensive metrics (confusion matrix, ROC curves)
+- Privacy-utility tradeoff visualization
 
-**Phase 5: Optimization**
-- Hyperparameter tuning
-- Scalability testing
+**Phase 5: Optimization** ← CURRENT PHASE
+- Hyperparameter tuning (grid/random/Optuna)
+- Scalability testing (10-100+ clients)
+- Model compression (pruning, quantization, distillation)
 - Documentation finalization
 
 ---
@@ -219,11 +220,22 @@ tensorboard --logdir=results/tensorboard
 - `src/utils/metrics.py`: Evaluation metrics
 - `src/utils/visualization.py`: Plotting functions
 
-**Phase 3 Modules** ✓ NEW:
+**Phase 3 Modules** ✓:
 - `src/federated/maml_trainer.py`: MAML training logic with inner/outer loops
 - `src/federated/flower_client.py`: Flower client for federated MAML
 - `src/federated/flower_server.py`: Flower server with custom aggregation strategy
 - `docs/phase2_insights.md`: Key findings from data exploration
+
+**Phase 4 Modules** ✓:
+- `src/utils/metrics.py`: Comprehensive metrics (confusion matrix, ROC, privacy)
+- `src/utils/visualization.py`: TensorBoard logger, plotting utilities
+- Differential privacy integration in MAMLTrainer
+- Baseline algorithms (FedAvg, FedProx, Local-only)
+
+**Phase 5 Modules** ✓ NEW:
+- `src/optimization/hyperparameter_tuning.py`: Grid/random/Optuna search
+- `src/optimization/scalability.py`: Scalability testing (10-100+ clients)
+- `src/optimization/compression.py`: Pruning, quantization, distillation
 
 **Configuration**:
 - `configs/config.yaml`: Hyperparameters for federated training

@@ -1,0 +1,46 @@
+{
+  "method": "random_search",
+  "metric": "accuracy",
+  "maximize": true,
+  "best_params": {
+    "hidden_dims": [
+      16,
+      8
+    ],
+    "inner_lr": 0.01
+  },
+  "best_score": 0.5791998267173767,
+  "all_results": [
+    {
+      "params": {
+        "hidden_dims": [
+          16,
+          8
+        ],
+        "inner_lr": 0.01
+      },
+      "metrics": {
+        "accuracy": 0.5791998267173767,
+        "loss": 0.5
+      },
+      "score": 0.5791998267173767,
+      "timestamp": "2026-01-05T23:56:36.528583"
+    },
+    {
+      "params": {
+        "hidden_dims": [
+          16,
+          8
+        ],
+        "inner_lr": 0.1
+      },
+      "metrics": {
+        "accuracy": 0.5627147495746613,
+        "loss": 0.5
+      },
+      "score": 0.5627147495746613,
+      "timestamp": "2026-01-05T23:56:36.529639"
+    }
+  ],
+  "timestamp": "2026-01-05T23:56:36.529725"
+}
