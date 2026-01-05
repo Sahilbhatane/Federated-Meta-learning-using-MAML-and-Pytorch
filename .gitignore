@@ -80,6 +80,9 @@ results/experiments/*.pkl
 results/experiments/*.json
 results/federated/*.pt
 results/tensorboard/*
+results/tuning/*
+results/scalability/*
+results/compression/*
 
 # Temporary files
 *.tmp
@@ -94,6 +97,7 @@ results/tensorboard/*
 htmlcov/
 .tox/
 .hypothesis/
+ISSUES.md
 
 # Documentation builds
 docs/_build/
