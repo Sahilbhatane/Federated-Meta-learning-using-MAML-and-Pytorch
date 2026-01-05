@@ -51,7 +51,7 @@ def test_hyperparameter_tuning():
             model.eval()
             with torch.no_grad():
                 X = torch.randn(20, 8)
-                out = model(X)
+                model(X)
             return {'accuracy': 0.5 + 0.1 * torch.rand(1).item(), 'loss': 0.5}
         
         param_space = {
@@ -98,7 +98,7 @@ def test_scalability():
         assert 'X' in clients_data[0] and 'y' in clients_data[0]
         print("[PASS] generate_synthetic_clients works")
         
-        model_fn = lambda: SimpleNet()
+        model_fn = SimpleNet
         tester = ScalabilityTester(model_fn, save_dir='results/scalability')
         print("[PASS] ScalabilityTester instantiation")
         
@@ -183,12 +183,12 @@ def test_integration():
         print("[PASS] All optimization modules import from package")
         
         from src.models.base_model import HealthMonitorNet
-        model = HealthMonitorNet(8, [32, 16], 4)
+        model = HealthMonitorNet(9, [32, 16], 4)
         compressor = ModelCompressor(model)
         pruned = compressor.prune(amount=0.2)
         
         pruned.eval()
-        test_input = torch.randn(1, 8)
+        test_input = torch.randn(1, 9)
         with torch.no_grad():
             out = pruned(test_input)
         assert out.shape == (1, 4)
@@ -213,11 +213,6 @@ def generate_issues_md():
         return
     
     issues_path = Path(__file__).parent.parent / 'ISSUES.md'
-    
-    existing_content = ""
-    if issues_path.exists():
-        with open(issues_path, 'r') as f:
-            existing_content = f.read()
     
     new_issues = f"\n\n## Phase 5 Issues ({datetime.now().strftime('%Y-%m-%d')})\n\n"
     for i, issue in enumerate(ISSUES, 1):

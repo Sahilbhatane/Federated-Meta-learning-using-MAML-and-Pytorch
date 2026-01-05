@@ -11,7 +11,6 @@ import torch.nn.utils.prune as prune
 from typing import Dict, List, Optional, Tuple, Any
 from pathlib import Path
 import json
-from datetime import datetime
 import copy
 
 
@@ -155,7 +154,18 @@ class ModelCompressor:
             model.qconfig = torch.quantization.get_default_qconfig('fbgemm')
             torch.quantization.prepare(model, inplace=True)
             with torch.no_grad():
-                dummy_input = torch.randn(1, 8)
+                # Infer input dimension for calibration from the first Linear layer
+                input_dim = None
+                for module in model.modules():
+                    if isinstance(module, nn.Linear):
+                        input_dim = module.in_features
+                        break
+                if input_dim is None:
+                    raise ValueError(
+                        "Unable to infer input dimension for static quantization calibration: "
+                        "no nn.Linear layer with in_features found in the model."
+                    )
+                dummy_input = torch.randn(1, input_dim)
                 for _ in range(10):
                     model(dummy_input)
             quantized_model = torch.quantization.convert(model)
