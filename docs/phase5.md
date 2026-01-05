@@ -17,7 +17,7 @@ Phase 5 adds optimization utilities for production-ready federated meta-learning
 from src.optimization import HyperparameterTuner
 
 tuner = HyperparameterTuner(
-    model_fn=lambda hidden_dims: HealthMonitorNet(8, hidden_dims, 4),
+    model_fn=lambda hidden_dims: HealthMonitorNet(9, hidden_dims, 4),
     train_fn=lambda model, inner_lr: train_maml(model, inner_lr),
     param_space={
         'hidden_dims': [[16, 8], [32, 16], [64, 32]],
@@ -53,7 +53,7 @@ from src.optimization import ScalabilityTester
 from src.models import HealthMonitorNet
 
 tester = ScalabilityTester(
-    model_fn=lambda: HealthMonitorNet(8, [32, 16], 4)
+    model_fn=lambda: HealthMonitorNet(9, [32, 16], 4)
 )
 
 results = tester.run_scalability_test(
@@ -88,7 +88,7 @@ clients_data = generate_synthetic_clients(
 from src.optimization import ModelCompressor
 from src.models import HealthMonitorNet
 
-model = HealthMonitorNet(8, [32, 16], 4)
+model = HealthMonitorNet(9, [32, 16], 4)
 compressor = ModelCompressor(model)
 
 # Pruning (reduce parameters)
@@ -98,7 +98,7 @@ pruned = compressor.prune(amount=0.3, method='l1_unstructured')
 quantized = compressor.quantize(mode='dynamic', dtype=torch.qint8)
 
 # Benchmark
-benchmark = compressor.benchmark(torch.randn(1, 8), num_runs=100)
+benchmark = compressor.benchmark(torch.randn(1, 9), num_runs=100)
 
 # Save compressed model
 compressor.save('compressed_model.pt')
@@ -106,7 +106,7 @@ compressor.save('compressed_model.pt')
 
 #### Knowledge Distillation
 ```python
-student = HealthMonitorNet(8, [16, 8], 4)  # Smaller model
+student = HealthMonitorNet(9, [16, 8], 4)  # Smaller model
 trained_student = compressor.distill(
     student_model=student,
     train_loader=train_loader,

@@ -8,11 +8,9 @@ for tuning MAML and federated learning hyperparameters.
 import itertools
 import random
 import json
-import torch
 import torch.nn as nn
 from pathlib import Path
-from typing import Dict, List, Any, Callable, Optional, Tuple
-from copy import deepcopy
+from typing import Dict, List, Any, Callable, Optional
 from datetime import datetime
 
 # Optional Optuna import

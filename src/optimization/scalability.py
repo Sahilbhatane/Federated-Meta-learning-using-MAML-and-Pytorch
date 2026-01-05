@@ -10,7 +10,7 @@ import json
 import torch
 import torch.nn as nn
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Callable
+from typing import Dict, List, Optional, Callable
 from dataclasses import dataclass
 from datetime import datetime
 import numpy as np
@@ -105,7 +105,6 @@ class ScalabilityTester:
         Returns:
             Dictionary with round metrics
         """
-        optimizer = torch.optim.Adam(model.parameters(), lr=outer_lr)
         criterion = nn.CrossEntropyLoss()
         
         total_loss = 0.0
