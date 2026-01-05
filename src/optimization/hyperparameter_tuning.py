@@ -220,7 +220,7 @@ def grid_search(
     
     Example:
         results = grid_search(
-            model_fn=lambda hidden_dims, dropout: HealthMonitorNet(8, hidden_dims, 4, dropout),
+            model_fn=lambda hidden_dims, dropout: HealthMonitorNet(9, hidden_dims, 4, dropout),
             train_fn=lambda model, inner_lr, num_rounds: train_maml(model, inner_lr, num_rounds),
             param_grid={
                 'hidden_dims': [[32, 16], [64, 32], [128, 64]],
